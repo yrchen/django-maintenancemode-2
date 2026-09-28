@@ -1,5 +1,4 @@
 import re
-from distutils.version import StrictVersion
 
 import django.conf.urls as urls
 from django.conf import settings
@@ -9,15 +8,13 @@ from django.utils import deprecation
 
 from maintenancemode.models import Maintenance
 from maintenancemode.utils.settings import (
-    DJANGO_VERSION, MAINTENANCE_ADMIN_IGNORED_URLS, MAINTENANCE_BLOCK_STAFF)
+    MAINTENANCE_ADMIN_IGNORED_URLS, MAINTENANCE_BLOCK_STAFF)
 
 urls.handler503 = 'maintenancemode.views.defaults.temporary_unavailable'
 urls.__all__.append('handler503')
 
-_base = deprecation.MiddlewareMixin if DJANGO_VERSION >= StrictVersion('1.10.0') else object
 
-
-class MaintenanceModeMiddleware(_base):
+class MaintenanceModeMiddleware(deprecation.MiddlewareMixin):
     def process_request(self, request):
         """
         Check if the current site is in maintenance.
